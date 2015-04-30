@@ -4,9 +4,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -25,6 +23,12 @@ import java.util.List;
 public class ForecastFragment extends Fragment {
 
     public ForecastFragment() {
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -51,16 +55,25 @@ public class ForecastFragment extends Fragment {
         ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
         listView.setAdapter(forecastAdapter);
 
-
-
-
-
         return rootView;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.forecastfragment, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_refresh)
+            return true;
+        return super.onOptionsItemSelected(item);
+    }
 
     public class FetchWeatherTask extends AsyncTask<String, Void, String>{
 
+        private  final String LOG_TAG = FetchWeatherTask.class.getSimpleName();
         private HttpURLConnection urlConnection;
         private BufferedReader reader;
         private String forecastJsonStr;
@@ -111,7 +124,7 @@ public class ForecastFragment extends Fragment {
                 }
                 forecastJsonStr = buffer.toString();
             } catch (IOException e) {
-                Log.e("PlaceholderFragment", "Error ", e);
+                Log.e(LOG_TAG, "Error ", e);
                 // If the code didn't successfully get the weather data, there's no point in attemping
                 // to parse it.
                 return null;
@@ -123,7 +136,7 @@ public class ForecastFragment extends Fragment {
                     try {
                         reader.close();
                     } catch (final IOException e) {
-                        Log.e("PlaceholderFragment", "Error closing stream", e);
+                        Log.e(LOG_TAG, "Error closing stream", e);
                     }
                 }
             }
