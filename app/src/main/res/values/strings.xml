@@ -10,5 +10,6 @@
     <string name="weather_image">Weather image</string>
     <string name="weather">Cloudy</string>
     <string name="item_1">Today - Sunny - 88/63</string>
+    <string name="Refresh">Refresh</string>
 
 </resources>
