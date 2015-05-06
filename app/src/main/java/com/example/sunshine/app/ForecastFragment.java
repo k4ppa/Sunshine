@@ -61,7 +61,7 @@ public class ForecastFragment extends Fragment {
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
             FetchWeatherTask task = new FetchWeatherTask();
-            task.execute();
+            task.execute("20121,it");
             return true;
         }
 
