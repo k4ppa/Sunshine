@@ -219,16 +219,6 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
     }
 
     @Override
-    protected void onCancelled() {
-        super.onCancelled();
-    }
-
-    @Override
-    protected void onProgressUpdate(Void... values) {
-        super.onProgressUpdate(values);
-    }
-
-    @Override
     protected void onPostExecute(String[] result) {
         super.onPostExecute(result);
 
@@ -242,10 +232,5 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
             forecastFragment.setmForecastAdapter(mForecastAdapter);
             // New data is back from the server.  Hooray!
         }
-    }
-
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
     }
 }
