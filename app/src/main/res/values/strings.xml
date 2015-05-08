@@ -11,5 +11,6 @@
     <string name="weather">Cloudy</string>
     <string name="item_1">Today - Sunny - 88/63</string>
     <string name="Refresh">Refresh</string>
+    <string name="title_activity_detail">DetailActivity</string>
 
 </resources>
