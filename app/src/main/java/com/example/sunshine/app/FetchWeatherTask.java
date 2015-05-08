@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.text.format.Time;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,10 +20,16 @@ import java.text.SimpleDateFormat;
 public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
 
     private  final String LOG_TAG = FetchWeatherTask.class.getSimpleName();
+    private ForecastFragment forecastFragment = null;
+
+    public FetchWeatherTask(ForecastFragment forecastFragment) {
+        super();
+        this.forecastFragment = forecastFragment;
+    }
 
     /* The date/time conversion code is going to be moved outside the asynctask later,
-         * so for convenience we're breaking it out into its own method now.
-         */
+             * so for convenience we're breaking it out into its own method now.
+             */
     private String getReadableDateString(long time){
         // Because the API returns a unix timestamp (measured in seconds),
         // it must be converted to milliseconds in order to be converted to valid date.
@@ -209,5 +216,36 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
         }
 
         return null;
+    }
+
+    @Override
+    protected void onCancelled() {
+        super.onCancelled();
+    }
+
+    @Override
+    protected void onProgressUpdate(Void... values) {
+        super.onProgressUpdate(values);
+    }
+
+    @Override
+    protected void onPostExecute(String[] result) {
+        super.onPostExecute(result);
+
+        if (result != null) {
+            ArrayAdapter<String> mForecastAdapter = forecastFragment.getmForecastAdapter();
+            mForecastAdapter.clear();
+
+            for(String dayForecastStr : result) {
+                mForecastAdapter.add(dayForecastStr);
+            }
+            forecastFragment.setmForecastAdapter(mForecastAdapter);
+            // New data is back from the server.  Hooray!
+        }
+    }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
     }
 }
