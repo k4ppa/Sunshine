@@ -2,7 +2,6 @@ package com.example.sunshine.app;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.*;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -72,7 +71,6 @@ public class ForecastFragment extends Fragment {
     }
 
     public ArrayAdapter<String> getmForecastAdapter() {
-        Log.v(ForecastFragment.class.getSimpleName(), "GET mForecastAdapter " + mForecastAdapter.toString());
         return mForecastAdapter;
     }
 

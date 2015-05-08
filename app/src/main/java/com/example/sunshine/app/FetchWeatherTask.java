@@ -118,9 +118,6 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
             resultStrs[i] = day + " - " + description + " - " + highAndLow;
         }
 
-        for (String s : resultStrs) {
-            Log.v(LOG_TAG, "Forecast entry: " + s);
-        }
         return resultStrs;
 
     }
@@ -158,8 +155,6 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
                     .build();
             URL url = new URL(builtUri.toString());
 
-            Log.v(LOG_TAG, "Forecast URL: " + builtUri.toString());
-
             // Create the request to OpenWeatherMap, and open the connection
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
@@ -188,7 +183,6 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
             }
 
             forecastJsonStr = buffer.toString();
-            Log.v(LOG_TAG, "Forecast JSON String: " + forecastJsonStr);
 
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
