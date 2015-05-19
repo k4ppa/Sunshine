@@ -19,6 +19,8 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
+import com.example.sunshine.app.data.WeatherContract.LocationEntry;
+import com.example.sunshine.app.data.WeatherContract.WeatherEntry;
 
 import java.util.HashSet;
 
@@ -53,8 +55,8 @@ public class TestDb extends AndroidTestCase {
         // Note that there will be another table in the DB that stores the
         // Android metadata (db version information)
         final HashSet<String> tableNameHashSet = new HashSet<String>();
-        tableNameHashSet.add(WeatherContract.LocationEntry.TABLE_NAME);
-        tableNameHashSet.add(WeatherContract.WeatherEntry.TABLE_NAME);
+        tableNameHashSet.add(LocationEntry.TABLE_NAME);
+        tableNameHashSet.add(WeatherEntry.TABLE_NAME);
 
         mContext.deleteDatabase(WeatherDbHelper.DATABASE_NAME);
         SQLiteDatabase db = new WeatherDbHelper(
@@ -78,7 +80,7 @@ public class TestDb extends AndroidTestCase {
                 tableNameHashSet.isEmpty());
 
         // now, do our tables contain the correct columns?
-        c = db.rawQuery("PRAGMA table_info(" + WeatherContract.LocationEntry.TABLE_NAME + ")",
+        c = db.rawQuery("PRAGMA table_info(" + LocationEntry.TABLE_NAME + ")",
                 null);
 
         assertTrue("Error: This means that we were unable to query the database for table information.",
@@ -86,11 +88,11 @@ public class TestDb extends AndroidTestCase {
 
         // Build a HashSet of all of the column names we want to look for
         final HashSet<String> locationColumnHashSet = new HashSet<String>();
-        locationColumnHashSet.add(WeatherContract.LocationEntry._ID);
-        locationColumnHashSet.add(WeatherContract.LocationEntry.COLUMN_CITY_NAME);
-        locationColumnHashSet.add(WeatherContract.LocationEntry.COLUMN_COORD_LAT);
-        locationColumnHashSet.add(WeatherContract.LocationEntry.COLUMN_COORD_LONG);
-        locationColumnHashSet.add(WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING);
+        locationColumnHashSet.add(LocationEntry._ID);
+        locationColumnHashSet.add(LocationEntry.COLUMN_CITY_NAME);
+        locationColumnHashSet.add(LocationEntry.COLUMN_COORD_LAT);
+        locationColumnHashSet.add(LocationEntry.COLUMN_COORD_LONG);
+        locationColumnHashSet.add(LocationEntry.COLUMN_LOCATION_SETTING);
 
         int columnNameIndex = c.getColumnIndex("name");
         do {
@@ -141,11 +143,11 @@ public class TestDb extends AndroidTestCase {
         ContentValues weatherValues = TestUtilities.createWeatherValues(locationRowId);
 
         // Insert ContentValues into database and get a row ID back
-        long weatherRowId = db.insert(WeatherContract.WeatherEntry.TABLE_NAME, null, weatherValues);
+        long weatherRowId = db.insert(WeatherEntry.TABLE_NAME, null, weatherValues);
 
         // Query the database and receive a Cursor back
         Cursor weatherCursor = db.query(
-                WeatherContract.WeatherEntry.TABLE_NAME,
+                WeatherEntry.TABLE_NAME,
                 null, // all columns
                 null, // Columns for the "where" clause
                 null, // Values for the "where" clause
@@ -196,7 +198,7 @@ public class TestDb extends AndroidTestCase {
 
         // Query the database and receive a Cursor back
         Cursor c = db.query(
-                WeatherContract.LocationEntry.TABLE_NAME,
+                LocationEntry.TABLE_NAME,
                 null, // all columns
                 null, // Columns for the "where" clause
                 null, // Values for the "where" clause

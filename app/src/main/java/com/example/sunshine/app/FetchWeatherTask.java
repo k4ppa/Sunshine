@@ -24,7 +24,7 @@ import android.preference.PreferenceManager;
 import android.text.format.Time;
 import android.util.Log;
 import android.widget.ArrayAdapter;
-import com.example.sunshine.app.data.WeatherContract;
+import com.example.sunshine.app.data.WeatherContract.WeatherEntry;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -121,11 +121,11 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
         for ( int i = 0; i < cvv.size(); i++ ) {
             ContentValues weatherValues = cvv.elementAt(i);
             String highAndLow = formatHighLows(
-                    weatherValues.getAsDouble(WeatherContract.WeatherEntry.COLUMN_MAX_TEMP),
-                    weatherValues.getAsDouble(WeatherContract.WeatherEntry.COLUMN_MIN_TEMP));
+                    weatherValues.getAsDouble(WeatherEntry.COLUMN_MAX_TEMP),
+                    weatherValues.getAsDouble(WeatherEntry.COLUMN_MIN_TEMP));
             resultStrs[i] = getReadableDateString(
-                    weatherValues.getAsLong(WeatherContract.WeatherEntry.COLUMN_DATE)) +
-                    " - " + weatherValues.getAsString(WeatherContract.WeatherEntry.COLUMN_SHORT_DESC) +
+                    weatherValues.getAsLong(WeatherEntry.COLUMN_DATE)) +
+                    " - " + weatherValues.getAsString(WeatherEntry.COLUMN_SHORT_DESC) +
                     " - " + highAndLow;
         }
         return resultStrs;
@@ -247,16 +247,16 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
 
                 ContentValues weatherValues = new ContentValues();
 
-                weatherValues.put(WeatherContract.WeatherEntry.COLUMN_LOC_KEY, locationId);
-                weatherValues.put(WeatherContract.WeatherEntry.COLUMN_DATE, dateTime);
-                weatherValues.put(WeatherContract.WeatherEntry.COLUMN_HUMIDITY, humidity);
-                weatherValues.put(WeatherContract.WeatherEntry.COLUMN_PRESSURE, pressure);
-                weatherValues.put(WeatherContract.WeatherEntry.COLUMN_WIND_SPEED, windSpeed);
-                weatherValues.put(WeatherContract.WeatherEntry.COLUMN_DEGREES, windDirection);
-                weatherValues.put(WeatherContract.WeatherEntry.COLUMN_MAX_TEMP, high);
-                weatherValues.put(WeatherContract.WeatherEntry.COLUMN_MIN_TEMP, low);
-                weatherValues.put(WeatherContract.WeatherEntry.COLUMN_SHORT_DESC, description);
-                weatherValues.put(WeatherContract.WeatherEntry.COLUMN_WEATHER_ID, weatherId);
+                weatherValues.put(WeatherEntry.COLUMN_LOC_KEY, locationId);
+                weatherValues.put(WeatherEntry.COLUMN_DATE, dateTime);
+                weatherValues.put(WeatherEntry.COLUMN_HUMIDITY, humidity);
+                weatherValues.put(WeatherEntry.COLUMN_PRESSURE, pressure);
+                weatherValues.put(WeatherEntry.COLUMN_WIND_SPEED, windSpeed);
+                weatherValues.put(WeatherEntry.COLUMN_DEGREES, windDirection);
+                weatherValues.put(WeatherEntry.COLUMN_MAX_TEMP, high);
+                weatherValues.put(WeatherEntry.COLUMN_MIN_TEMP, low);
+                weatherValues.put(WeatherEntry.COLUMN_SHORT_DESC, description);
+                weatherValues.put(WeatherEntry.COLUMN_WEATHER_ID, weatherId);
 
                 cVVector.add(weatherValues);
             }
@@ -267,8 +267,8 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
             }
 
             // Sort order:  Ascending, by date.
-            String sortOrder = WeatherContract.WeatherEntry.COLUMN_DATE + " ASC";
-            Uri weatherForLocationUri = WeatherContract.WeatherEntry.buildWeatherLocationWithStartDate(
+            String sortOrder = WeatherEntry.COLUMN_DATE + " ASC";
+            Uri weatherForLocationUri = WeatherEntry.buildWeatherLocationWithStartDate(
                     locationSetting, System.currentTimeMillis());
 
             // Students: Uncomment the next lines to display what what you stored in the bulkInsert
