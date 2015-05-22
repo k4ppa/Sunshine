@@ -15,6 +15,7 @@
  */
 package com.example.sunshine.app;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -128,9 +129,13 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
             values.put(WeatherContract.LocationEntry.COLUMN_COORD_LAT, lat);
             values.put(WeatherContract.LocationEntry.COLUMN_COORD_LONG, lon);
 
-            Uri newUri = mContext.getContentResolver().insert(WeatherContract.LocationEntry.CONTENT_URI, values);
-            locationId = Long.valueOf(newUri.getLastPathSegment());
+            Uri insertedUri = mContext.getContentResolver().insert(WeatherContract.LocationEntry.CONTENT_URI, values);
+
+            // The resulting URI contains the ID for the row.  Extract the locationId from the Uri.
+            locationId = ContentUris.parseId(insertedUri);
         }
+        locationCursor.close();
+
         return locationId;
     }
 
