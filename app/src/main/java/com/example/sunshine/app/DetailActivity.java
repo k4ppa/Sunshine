@@ -1,14 +1,19 @@
 package com.example.sunshine.app;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.*;
-import android.support.v7.widget.ShareActionProvider;
 import android.widget.TextView;
+import com.example.sunshine.app.data.WeatherContract.WeatherEntry;
 
 
 public class DetailActivity extends ActionBarActivity {
@@ -51,11 +56,31 @@ public class DetailActivity extends ActionBarActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class DetailFragment extends Fragment {
+    public static class DetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
         private static final String LOG_TAG = DetailFragment.class.getSimpleName();
         private static final String FORECAST_SHARE_HASHTAG = " #SunshineApp";
+
+        private ShareActionProvider mShareActionProvider;
         private String mForecastString;
+
+        private final static int DETAIL_LOADER = 0;
+
+        private static final String[] FORECAST_COLUMNS = {
+                WeatherEntry.TABLE_NAME + "." + WeatherEntry._ID,
+                WeatherEntry.COLUMN_DATE,
+                WeatherEntry.COLUMN_SHORT_DESC,
+                WeatherEntry.COLUMN_MAX_TEMP,
+                WeatherEntry.COLUMN_MIN_TEMP,
+        };
+
+        // These indices are tied to FORECAST_COLUMNS.  If FORECAST_COLUMNS changes, these
+        // must change.
+        static final int COL_WEATHER_ID = 0;
+        static final int COL_WEATHER_DATE = 1;
+        static final int COL_WEATHER_DESC = 2;
+        static final int COL_WEATHER_MAX_TEMP = 3;
+        static final int COL_WEATHER_MIN_TEMP = 4;
 
         public DetailFragment() {
             setHasOptionsMenu(true);
@@ -64,20 +89,7 @@ public class DetailActivity extends ActionBarActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
-
-            // The detail Activity called via intent.  Inspect the intent for forecast data.
-            Intent intent = getActivity().getIntent();
-            if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
-                mForecastString = intent.getStringExtra(Intent.EXTRA_TEXT);
-            }
-
-            if (null != mForecastString) {
-                ((TextView) rootView.findViewById(R.id.detail_text))
-                        .setText(mForecastString);
-            }
-
-            return rootView;
+            return inflater.inflate(R.layout.fragment_detail, container, false);
         }
 
         @Override
@@ -85,15 +97,17 @@ public class DetailActivity extends ActionBarActivity {
             inflater.inflate(R.menu.detailfragment, menu);
 
             MenuItem item = menu.findItem(R.id.action_share);
-            ShareActionProvider mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
+            mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
 
-            //mActionProvider = MenuItemCompat.getActionProvider(item);
-
-            if (mShareActionProvider != null) {
+            // If onLoadFinished happens before this, we can go ahead and set the share intent now.
+            if (mForecastString != null)
                 mShareActionProvider.setShareIntent(createShareForecastIntent());
-            } else {
-                Log.d(LOG_TAG, "");
-            }
+        }
+
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+            getLoaderManager().initLoader(DETAIL_LOADER, null, this);
+            super.onActivityCreated(savedInstanceState);
         }
 
         private Intent createShareForecastIntent() {
@@ -102,6 +116,49 @@ public class DetailActivity extends ActionBarActivity {
             intent.setType("text/plain");
             intent.putExtra(Intent.EXTRA_TEXT, mForecastString + FORECAST_SHARE_HASHTAG);
             return intent;
+        }
+
+        @Override
+        public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+            Log.d(LOG_TAG, "In onCreateLoader");
+            Intent intent = getActivity().getIntent();
+            if (intent == null)
+                return null;
+
+            return new CursorLoader(getActivity(),
+                    intent.getData(),
+                    FORECAST_COLUMNS,
+                    null,
+                    null,
+                    null);
+        }
+
+        @Override
+        public void onLoaderReset(Loader<Cursor> loader) {
+        }
+
+        @Override
+        public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+            Log.d(LOG_TAG, "In onLoadFinished");
+
+            if (!data.moveToFirst())
+                return;
+
+            String dateString = Utility.formatDate(data.getLong(COL_WEATHER_DATE));
+
+            boolean isMetric = Utility.isMetric(getActivity());
+            String maxTemp = Utility.formatTemperature(data.getDouble(COL_WEATHER_MAX_TEMP), isMetric);
+            String minTemp = Utility.formatTemperature(data.getDouble(COL_WEATHER_MIN_TEMP), isMetric);
+
+            String weatherDescription = data.getString(COL_WEATHER_DESC);
+
+            mForecastString = String.format("%s - %s - %s/%s", dateString, weatherDescription, maxTemp, minTemp);
+
+            TextView detailTextView = (TextView) getView().findViewById(R.id.detail_text);
+            detailTextView.setText(mForecastString);
+
+            if (mShareActionProvider != null)
+                mShareActionProvider.setShareIntent(createShareForecastIntent());
         }
     }
 }
