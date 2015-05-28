@@ -145,6 +145,19 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+//        int weatherId = data.getInt(COL_WEATHER_CONDITION_ID);
+//
+//        String date = Utility.getFriendlyDayString(getActivity(), data.getLong(COL_WEATHER_DATE));
+//
+//        if (date.equals("Today")) {
+//            int artId = Utility.getArtResourceForWeatherCondition(weatherId);
+//            ImageView todayView = (ImageView) getView().findViewById(R.id.list_item_icon);
+//            todayView.setImageResource(artId);
+//        } else {
+//            int iconId = Utility.getIconResourceForWeatherCondition(weatherId);
+//            ImageView iconView = (ImageView) getView().findViewById(R.id.list_item_icon);
+//            iconView.setImageResource(iconId);
+//        }
         mForecastAdapter.swapCursor(data);
     }
 }
