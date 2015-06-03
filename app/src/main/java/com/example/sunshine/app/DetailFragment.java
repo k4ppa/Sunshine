@@ -115,19 +115,23 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Log.d(LOG_TAG, "In onCreateLoader");
+    public Loader onCreateLoader(int id, Bundle args) {
+        Log.v(LOG_TAG, "In onCreateLoader");
         Intent intent = getActivity().getIntent();
-        if (intent == null)
+        if (intent == null || intent.getData() == null) {
             return null;
+        }
 
+        // Now create and return a CursorLoader that will take care of
+        // creating a Cursor for the data being displayed.
         return new CursorLoader(
                 getActivity(),
                 intent.getData(),
                 DETAIL_COLUMNS,
                 null,
                 null,
-                null);
+                null
+        );
     }
 
     @Override
