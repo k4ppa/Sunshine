@@ -16,7 +16,7 @@ import com.example.sunshine.app.data.WeatherContract.WeatherEntry;
 import java.util.Map;
 import java.util.Set;
 
-//import com.example.android.sunshine.app.utils.PollingCheck;
+//import com.example.sunshine.app.utils.PollingCheck;
 
 /*
     Students: These are functions and some test data to make it easier to test your database and
